@@ -1,28 +1,22 @@
-import React, { useState } from 'react'
-import { Form, redirect, useActionData, useLoaderData, useNavigation } from 'react-router-dom';
-import { loginUser } from '../api';
+import React from 'react'
+import { Form, Link, Navigate, redirect, useActionData, useLoaderData, useNavigation } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 
-export async function loader(loaderObj){
-  // Was the user (forcibly) redirected to login page or not?
-  return new URL(loaderObj.request.url).searchParams.get("redirected");
+export async function loader({ request }){
+  return new URL(request.url).searchParams.get("redirectTo")
 }
 
-export async function action(request, setLoggedIn){
-  // Form submission is handled here
+export async function action(request, login){
 
   const formData = await request.formData();
   const email = formData.get("email");
   const pwd = formData.get("password");
 
   try {
-    await loginUser({email: email, password: pwd});
-    localStorage.setItem("loggedin", true);
-    setLoggedIn(true);
+    await login(email, pwd);
     const pathname = new URL(request.url).searchParams.get("redirectTo") || "/";
-    const res = redirect(pathname);
-    res.body = true;
-    return res;
+    return redirect(pathname);
   }
   catch (err) {
     return err.message;
@@ -42,6 +36,12 @@ function Login() {
   const navigation = useNavigation();
   const formStatus = navigation.state;
 
+  // Don't allow login if the user is logged in, redirect to profile so they can log out first!
+  const { currentUser } = useAuth();
+  if (currentUser){
+    return <Navigate to='/profile?redirectTo=login' />
+  }
+
   return (
     <div className='login-container'>
       <h1>Sign in to your account</h1>
@@ -54,6 +54,8 @@ function Login() {
           {formStatus === "submitting" ? "Logging in..." : "Log in"}
         </button>
       </Form>
+      <div>Don't have an account? <Link to='/signup'>Sign up</Link></div>
+      <div>Can't sign in? <Link to='/password-reset'>Reset password</Link></div>
     </div>
   );
 }

@@ -1,20 +1,23 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import '../styles/navbar.css';
+import { useAuth } from '../contexts/AuthContext';
 
 
-function Layout(props) {
+function Layout() {
   return (
     <>
-      <Navbar loggedIn={props.loggedIn} setLoggedIn={props.setLoggedIn}/>
-      <Outlet context={[props.lo]}/>
+      <Navbar />
+      <Outlet />
     </>
   )
 }
 
-function Navbar(props) {
+function Navbar() {
 
-  if (!props.loggedIn){
+  const { currentUser } = useAuth();
+
+  if (!currentUser){
     return (
       <div className='navbar'>
       <ul className='navbar-nav'>
@@ -28,10 +31,10 @@ function Navbar(props) {
     return (
       <div className='navbar'>
         <ul className='navbar-nav'>
-          <NavItem label="#Logo" dest="/"/>
-          <NavItem label="Add a meal" dest="addMeal"/>
-          <NavItem label="Today-list" dest="todayList" />
-          <NavItem label="Log out" dest="/" setLoggedIn={props.setLoggedIn}/>
+          <NavItem label="#Logo" dest="/" />
+          <NavItem label="Add a meal" dest="addMeal" />
+          <NavItem label="Today-list" dest="today-list" />
+          <NavItem label="Profile" dest="/profile" />
         </ul>
       </div>
     );
@@ -39,20 +42,6 @@ function Navbar(props) {
 }
 
 function NavItem(props) {
-
-  if (props.setLoggedIn){
-    return (
-      <li className='nav-item' onClick={() => {
-          localStorage.removeItem("loggedin");
-          props.setLoggedIn(false);
-        }}>
-        <NavLink to={props.dest}>
-          {props.label}
-        </NavLink>
-      </li>
-    );
-  }
-
   return (
     <li className='nav-item'>
       <NavLink 

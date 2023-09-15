@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements, redirect } from 'react-router-dom';
+import React from 'react'
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { checkAuth } from '../utils';
 import '../styles/general.css';
 
 // Pages
@@ -10,6 +9,7 @@ import NotFound from '../pages/NotFound';
 import Home from '../pages/Home';
 import AddMeal from '../pages/AddMeal';
 import TodayList from '../pages/TodayList';
+import Dashboard from '../pages/Dashboard';
 
 // User related pages
 import Signup, {action as signupAction} from '../pages/user_related/Signup';
@@ -26,8 +26,8 @@ import Layout from './Layout';
 
 function App() {
   const {
-    currentUser, 
-    signup, login, 
+    signup, 
+    login, 
     handleUpdateEmail, 
     handleUpdatePassword,
     resetPassword,
@@ -43,7 +43,7 @@ function App() {
       <Route 
         path='/signup' 
         element={<Signup />} 
-        action={({ request }) => signupAction(request, signup)}
+        action={async ({ request }) => await signupAction(request, signup)}
       />
       <Route 
         path='/login' 
@@ -54,7 +54,7 @@ function App() {
       <Route
         path='/password-reset'
         element={<ForgotPassword />}
-        action={async ({ request }) => forgotAction(request, resetPassword)}
+        action={async ({ request }) => await forgotAction(request, resetPassword)}
       />
 
       <Route element={<ProtectedRoute />} loader={protectedLoader}>
@@ -71,6 +71,10 @@ function App() {
         <Route 
           path='/today-list' 
           element={<TodayList />} 
+        />
+        <Route 
+          path='/dashboard'
+          element={<Dashboard />}
         />
       </Route>
 

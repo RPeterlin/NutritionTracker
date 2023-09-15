@@ -4,7 +4,7 @@ import { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEm
 
 
 const AuthContext = createContext();
-
+export let userOutsideContext = null;
 
 export function AuthProvider({ children }) {
 
@@ -35,11 +35,11 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       setCurrentUser(user);
+      userOutsideContext = user;
       setLoading(false);
     });
     return unsubscribe;
   }, []);
-
 
   const value = {
     currentUser,
@@ -50,7 +50,6 @@ export function AuthProvider({ children }) {
     handleUpdateEmail,
     handleUpdatePassword,
   };
-
 
   return (
     <AuthContext.Provider value={value}>

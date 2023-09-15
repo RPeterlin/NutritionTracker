@@ -32,6 +32,7 @@ function Navbar() {
       <div className='navbar'>
         <ul className='navbar-nav'>
           <NavItem label="#Logo" dest="/" />
+          <NavItem label="Dashboard" dest="/dashboard" />
           <NavItem label="Add a meal" dest="addMeal" />
           <NavItem label="Today-list" dest="today-list" />
           <NavItem label="Profile" dest="/profile" />
@@ -43,15 +44,11 @@ function Navbar() {
 
 function NavItem(props) {
   return (
-    <li className='nav-item'>
-      <NavLink 
-        to={props.dest}
-        className={
-          ({isActive}) => props.label === "#Logo" ? "logo" : isActive ? "activeNavLink" : ""
-        }>
-        {props.label}
-      </NavLink>
-    </li>
+    <NavLink to={props.dest} className={
+      ({isActive}) => props.label === "#Logo" ? "logo nav-item" : isActive ? "activeNavLink nav-item" : "nav-item"
+    }>
+      <li>{props.label}</li>
+    </NavLink>
   );
 }
 

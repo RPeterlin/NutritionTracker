@@ -35,7 +35,7 @@
   box-shadow: 0 1rem 2px -1rem var(--main-color);
 }
 
-.nav-item:has(.activeNavLink) {
+.activeNavLink {
   color: var(--secondary-color);
   box-shadow: 0 1rem 2px -1rem var(--main-color);
 }

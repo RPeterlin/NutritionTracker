@@ -1,0 +1,130 @@
+.content {
+
+  --margin: 4rem;
+  margin: var(--margin);
+  height: calc(100vh - 2*var(--margin) - var(--navbar-height));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginContainer {
+
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 2px solid var(--border-color);
+  border-radius: 1rem;
+  letter-spacing: 1px;
+
+  height: 90%;
+  width: 30%;
+
+  min-width: 28rem;
+  min-height: 40rem;
+}
+
+.loginContainer h1 {
+  box-sizing: border-box;
+  padding-top: 4rem;
+
+  margin-bottom: 4.5rem;
+  font-weight: bold;
+  font-size: 2rem;
+  color: var(--main-color);
+}
+
+.loginContainer h3 {
+  box-sizing: border-box;
+  /* padding: 0.5rem 2rem 1rem; */
+  /* background-color: red; */
+  width: 80%;
+  color: rgb(222, 103, 103);
+  text-align: center;
+}
+
+.loginContainer h3:first-of-type {
+  margin-bottom: 1rem;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  height: 70%;
+
+  margin-top: 2.5rem;
+}
+
+/* .labelInput {
+  display: flex;
+  flex-direction: column;
+  margin: 1.7rem 2rem 0;
+}
+
+.labelInput label {
+  font-size: 1.3rem;
+  margin-bottom: 0.6rem;
+  color: var(--main-color);
+} */
+
+
+
+input {
+  box-sizing: border-box;
+  height: 2.5rem;
+
+  margin: 2rem 2rem 0;
+
+  border-radius: 3rem;
+  border: none;
+  border: 2px solid rgba(0, 0, 0, 0);
+
+  background-color: var(--border-color);
+
+  font-size: 1rem;
+  padding-left: 1rem;
+  color: white;
+}
+
+input:focus {
+  border: 2px solid var(--main-color);
+  outline: none;
+}
+
+.loginForm button {
+  height: 3rem;
+  margin: 2.5rem 2rem 0;
+  background: none;
+  border: 2px solid var(--main-color);
+  border-radius: 3rem;
+  color: var(--main-color);
+
+  font-size: 1rem;
+}
+
+.loginForm button:hover {
+  background-color: var(--main-color);
+  color: white;
+}
+
+.linkTextSU {
+  margin-bottom: 1rem;
+}
+
+.linkTextRP {
+  margin-bottom: 2.5rem;
+}
+
+.loginContainer a {
+  color: var(--main-color);
+}
+
+.loginContainer a {
+  color: var(--main-color);
+  text-decoration: underline;
+}

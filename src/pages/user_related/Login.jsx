@@ -1,6 +1,7 @@
 import React from 'react'
 import { Form, Link, Navigate, redirect, useActionData, useLoaderData, useNavigation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import styles from '../../styles/Login.module.css';
 
 
 export async function loader({ request }){
@@ -43,19 +44,21 @@ function Login() {
   }
 
   return (
-    <div className='login-container'>
-      <h1>Sign in to your account</h1>
-      {wasRedirected && <h3 className='redirect-message'>You must log in first</h3>}
-      {errorMessage && <h3 className='error-message'>{errorMessage}</h3>}
-      <Form method='post' className='login-form' replace>
-        <input name='email' type='email' placeholder='Email address' />
-        <input name='password' type='password' placeholder='Password' />
-        <button disabled={formStatus === "submitting"}>
-          {formStatus === "submitting" ? "Logging in..." : "Log in"}
-        </button>
-      </Form>
-      <div>Don't have an account? <Link to='/signup'>Sign up</Link></div>
-      <div>Can't sign in? <Link to='/password-reset'>Reset password</Link></div>
+    <div className={styles.content}>
+      <div className={styles.loginContainer}>
+        <h1>Sign in to your account</h1>
+        {wasRedirected && <h3 className={styles.redirectMessage}>You must log in first</h3>}
+        {errorMessage && <h3 className={styles.errorMessage}>{errorMessage}</h3>}
+        <Form method='post' className={styles.loginForm} replace>
+          <input name='email' type='email' placeholder='Email address' />
+          <input name='password' type='password' placeholder='Password' />
+          <button type='submit' disabled={formStatus === 'submitting'}>
+            {formStatus === 'submitting' ? 'Logging in...' : 'Log in'}
+          </button>
+        </Form>
+        <div className={styles.linkTextSU}>Don't have an account? <Link to='/signup'>Sign up</Link></div>
+        <div className={styles.linkTextRP}>Can't sign in? <Link to='/password-reset'>Reset password</Link></div>
+      </div>
     </div>
   );
 }

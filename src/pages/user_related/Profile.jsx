@@ -1,19 +1,13 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Form, useLoaderData, useNavigate, defer } from 'react-router-dom';
-import { userOutsideContext } from '../../contexts/AuthContext';
+import { Form, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 
-console.log(userOutsideContext);
-export function loader({ request }){
-  // Used in case of user wanting to either reset their password, sign up or login WHILE ALREADY BEING LOGGED IN. In case they want to access one of these routes, they should logout first and then be redirected back to the thing they were initially trying to do. 
-  if (!userOutsideContext){
-    console.log("Don't fetch data!");
+
+export function loader(request, currentUser){
+  if (!currentUser){
+    return redirect(`/login?redirectTo=/profile`);
   }
-  else {
-    console.log("Fetch data!");
-  }
-  // Fixes the problem mentioned in the component bellow (no need for protected route component). Decide whether to use it or not!!! If the answer is not, remove the userOutsideContext from AuthContext.jsx!!!
-  return request;
+  return null;
 }
 
 
@@ -49,14 +43,9 @@ function Profile() {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  // Do that here instead of in loader, because loaders get executed in parallel (profileLoader and protectedLoader), meaning any potential data fetching in profileLoader would have started before the ProtectedRoute gets the chance redirect non authenticated users!
-  const loaderRequest = useLoaderData();
-  const destination = new URL(loaderRequest.url).searchParams.get("redirectTo");
-
   async function handleLogout() {
     await logout();
-    const pathname = destination || '';
-    navigate(`/${pathname}`);
+    navigate('/');
   }
 
   return (

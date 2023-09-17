@@ -4,19 +4,17 @@ import { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEm
 
 
 const AuthContext = createContext();
-export let userOutsideContext = null;
 
 export function AuthProvider({ children }) {
 
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  
 
   function signup(email, pwd){
     return createUserWithEmailAndPassword(auth, email, pwd);
   }
   function login(email, pwd){
-    console.log("User has been logged in");
     return signInWithEmailAndPassword(auth, email, pwd);
   }
   function logout(){
@@ -35,7 +33,6 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       setCurrentUser(user);
-      userOutsideContext = user;
       setLoading(false);
     });
     return unsubscribe;

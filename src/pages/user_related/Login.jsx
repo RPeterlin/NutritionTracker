@@ -1,11 +1,21 @@
 import React from 'react'
-import { Form, Link, Navigate, redirect, useActionData, useLoaderData, useNavigation } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { Form, Link, redirect, useActionData, useLoaderData, useNavigation } from 'react-router-dom';
 import styles from '../../styles/Login.module.css';
 
 
-export async function loader({ request }){
-  return new URL(request.url).searchParams.get("redirectTo")
+export async function loader(request, currentUser){
+
+  const dest = new URL(request.url).searchParams.get("redirectTo");
+
+  if (currentUser && !dest){
+    return redirect('/profile');
+  }
+  else if (currentUser){
+    return redirect(dest);
+  }
+  else {
+    return dest;
+  }
 }
 
 export async function action(request, login){
@@ -17,6 +27,7 @@ export async function action(request, login){
   try {
     await login(email, pwd);
     const pathname = new URL(request.url).searchParams.get("redirectTo") || "/";
+    console.log(pathname);
     return redirect(pathname);
   }
   catch (err) {
@@ -36,12 +47,6 @@ function Login() {
   // useNavigation has useful information such as the state of the navigation (form submission is a navigation event!). https://reactrouter.com/en/main/hooks/use-navigation
   const navigation = useNavigation();
   const formStatus = navigation.state;
-
-  // Don't allow login if the user is logged in, redirect to profile so they can log out first!
-  const { currentUser } = useAuth();
-  if (currentUser){
-    return <Navigate to='/profile?redirectTo=login' />
-  }
 
   return (
     <div className={styles.content}>

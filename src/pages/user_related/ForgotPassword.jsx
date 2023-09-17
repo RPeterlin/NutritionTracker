@@ -4,6 +4,15 @@ import { useAuth } from '../../contexts/AuthContext';
 import styles from '../../styles/ForgotPassword.module.css';
 
 
+export async function loader(request, currentUser){
+
+  if (currentUser){
+    return redirect('/profile');
+  }
+  return new URL(request.url).searchParams.get("redirectTo");
+}
+
+
 export async function action(request, resetPassword){
 
   const formData = await request.formData();
@@ -11,9 +20,6 @@ export async function action(request, resetPassword){
 
   try {
     await resetPassword(email)
-    // const pathname = new URL(request.url).searchParams.get("redirectTo") || "/";
-    // const res = redirect(pathname);
-    console.log("it worked");
     return redirect('/login');
   }
   catch (err) {
@@ -27,12 +33,6 @@ function ForgotPassword() {
   const errorMessage = useActionData();
   const navigation = useNavigation();
   const formStatus = navigation.state;
-
-  // Don't allow login if the user is logged in, redirect to profile so they can log out first!
-  const { currentUser } = useAuth();
-  if (currentUser){
-    return <Navigate to='/profile?redirectTo=password-reset' />
-  }
 
   return (
     <div className={styles.content}>

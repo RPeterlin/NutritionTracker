@@ -4,6 +4,15 @@ import { useAuth } from '../../contexts/AuthContext';
 import styles from '../../styles/Signup.module.css'
 
 
+export async function loader(request, currentUser){
+
+  if (currentUser){
+    return redirect('/profile');
+  }
+  return new URL(request.url).searchParams.get("redirectTo");
+}
+
+
 export async function action(request, login){
 
   const formData = await request.formData();
@@ -31,12 +40,6 @@ function Signup() {
   const errorMessage = useActionData();
   const navigation = useNavigation();
   const formStatus = navigation.state;
-
-  // Don't allow signup if the user is logged in, redirect to profile so they can log out first!
-  const { currentUser } = useAuth();
-  if (currentUser){
-    return <Navigate to='/profile?redirectTo=signup' />
-  }
 
   return (
     <div className={styles.content}>

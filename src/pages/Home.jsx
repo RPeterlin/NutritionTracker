@@ -1,8 +1,11 @@
 import React from 'react'
+import { useAuth } from '../contexts/AuthContext'
+import { useData } from '../contexts/DataContext';
 
 function Home() {
+  const { currentData } = useData();
   return (
-    <div>Home</div>
+    <div>{currentData?.email}</div>
   )
 }
 

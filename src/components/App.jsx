@@ -20,6 +20,7 @@ import ForgotPassword, {loader as forgotLoader, action as forgotAction} from '..
 
 // Components
 import Layout from './Layout';
+import { useData } from '../contexts/DataContext';
 
 
 function App() {
@@ -33,6 +34,10 @@ function App() {
     resetPassword,
   } = useAuth();
 
+  const {
+    addUser,
+  } = useData();
+
 
   const router = createBrowserRouter(createRoutesFromElements(
     <Route path='/' element={<Layout />}>
@@ -45,7 +50,7 @@ function App() {
         path='/signup' 
         element={<Signup />} 
         loader={({ request }) => signupLoader(request, currentUser)}
-        action={async ({ request }) => await signupAction(request, signup)}
+        action={async ({ request }) => await signupAction(request, signup, addUser)}
       />
       <Route 
         path='/login' 
@@ -69,18 +74,18 @@ function App() {
       />
       <Route 
         path='/add-meal' 
-        loader={({ request }) => addMealLoader(request, currentUser)}
         element={<AddMeal />} 
+        loader={({ request }) => addMealLoader(request, currentUser)}
       />
       <Route 
         path='/today-list' 
-        loader={({ request }) => todayLoader(request, currentUser)}
         element={<TodayList />} 
+        loader={({ request }) => todayLoader(request, currentUser)}
       />
       <Route 
         path='/dashboard'
-        loader={({ request }) => dashboardLoader(request, currentUser)}
         element={<Dashboard />}
+        loader={({ request }) => dashboardLoader(request, currentUser)}
       />
 
       {/* Page not found */}

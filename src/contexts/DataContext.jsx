@@ -1,7 +1,7 @@
 import { db } from '../firebase';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from './AuthContext';
-import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, setDoc } from 'firebase/firestore';
 
 
 const DataContext = createContext();
@@ -16,7 +16,7 @@ export function DataProvider({ children }) {
   useEffect(() => {
     // On login: add listener to the relevant user document
     if (currentUser){
-      const unsubscribe = onSnapshot(doc(db, 'users', '123'), doc => {
+      const unsubscribe = onSnapshot(doc(db, 'users', currentUser.uid), doc => {
         // Save feched data into currentData state
         setCurrentData(doc.data());
         setLoading(false);
@@ -31,19 +31,34 @@ export function DataProvider({ children }) {
   }, [currentUser]);
 
   function addUser(uid, email){
+    const docData = {
+      userID: uid,
+      email: email,
+      target_macros: {
+        calories: null,
+        tfat: null,
+        sfat: null,
+        carbs: null,
+        sugars: null,
+        protein: null,
+      },
+      today_list: [],
+    }
 
+    return setDoc(doc(db, 'users', uid), docData);
   }
-  function updateUser(props){
 
+  function updateUser(props){
+    // Update target_macros and/or email
   }
   function addElement(props){
-
+    // Modify user's meals
   }
   function deleteElement(props){
-
+    // Modify user's meals
   }
   function updateElement(props){
-
+    // Modify user's meals
   }
 
 
@@ -64,5 +79,5 @@ export function DataProvider({ children }) {
 }
 
 export function useData(){
-  return useData(DataContext);
+  return useContext(DataContext);
 }

@@ -13,7 +13,7 @@ export async function loader(request, currentUser){
 }
 
 
-export async function action(request, login){
+export async function action(request, signup, addUser){
 
   const formData = await request.formData();
   const email = formData.get('email');
@@ -26,8 +26,9 @@ export async function action(request, login){
   }
 
   try {
-    await login(email, pwd);
-    return redirect('/login');
+    const response = await signup(email, pwd);
+    await addUser(response.user.uid, email);
+    return redirect('/profile');
   }
   catch (err){
     return err.message;

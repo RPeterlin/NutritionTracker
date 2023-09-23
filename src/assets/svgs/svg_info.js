@@ -1,0 +1,3 @@
+const svg_info = [
+  
+];

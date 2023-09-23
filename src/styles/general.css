@@ -29,7 +29,7 @@
 body {
   /* box-sizing: border-box; */
   padding-top: var(--navbar-height);
-  /* padding-left: var(--sidebar-width); */
+  padding-left: var(--sidebar-width);
   margin: 0 auto;
   background-color: var(--bg-color);
   position: relative;

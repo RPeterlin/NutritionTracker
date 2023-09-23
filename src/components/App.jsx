@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import '../styles/general.css';
@@ -7,9 +7,10 @@ import '../styles/general.css';
 import Error from '../pages/Error';
 import NotFound from '../pages/NotFound';
 import Home from '../pages/Home';
-import AddMeal, { loader as addMealLoader} from '../pages/AddMeal';
-import TodayList, { loader as todayLoader} from '../pages/TodayList';
+import AddMeal, { loader as addMealLoader, action as addMealAction} from '../pages/AddMeal';
+import TodayList, { loader as todayLoader, action as todayListAction} from '../pages/TodayList';
 import Dashboard, { loader as dashboardLoader } from '../pages/Dashboard';
+import { action as dashboardAction } from '../components/Meal';
 
 // User related pages
 import Signup, {loader as signupLoader, action as signupAction} from '../pages/user_related/Signup';
@@ -36,8 +37,14 @@ function App() {
 
   const {
     addUser,
+    addToLibrary,
+    updateLibrary,
+    deleteFromLibrary,
+    updateTodayList,
   } = useData();
 
+  const [neki, setNeki] = useState();
+  const rerender = [neki, setNeki];
 
   const router = createBrowserRouter(createRoutesFromElements(
     <Route path='/' element={<Layout />}>
@@ -73,21 +80,26 @@ function App() {
         action={async ({ request }) => await profileAction(request, handleUpdateEmail, handleUpdatePassword)}
       />
       <Route 
-        path='/add-meal' 
-        element={<AddMeal />} 
-        loader={({ request }) => addMealLoader(request, currentUser)}
-      />
-      <Route 
         path='/today-list' 
         element={<TodayList />} 
         loader={({ request }) => todayLoader(request, currentUser)}
+        action={({ request }) => todayListAction(request, updateTodayList)}
       />
+
       <Route 
         path='/dashboard'
         element={<Dashboard />}
         loader={({ request }) => dashboardLoader(request, currentUser)}
-      />
-
+        action={async ({ request }) => await dashboardAction(request, deleteFromLibrary, updateLibrary, rerender)}
+      >
+        <Route 
+          path='add-meal' 
+          element={<AddMeal />} 
+          loader={({ request }) => addMealLoader(request, currentUser)}
+          action={async ({ request }) => await addMealAction(request, addToLibrary, rerender)}
+        />
+      </Route>
+        
       {/* Page not found */}
       <Route path='*' element={<NotFound/>}/>
     </Route>

@@ -1,0 +1,104 @@
+/* body {
+  padding-left: 0;
+  max-width: 1440px;
+} */
+
+main {
+  border-radius: 0;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  font-family: ubuntu, arial;
+}
+
+.todayTable {
+  margin-top: 2rem;
+  width: 100%;
+  color: white;
+  border-collapse: collapse;
+}
+
+.todayTable .contentRow {
+  color: #b5bac1;
+}
+
+.todayTable tr:nth-child(even).contentRow {
+  background-color: var(--bg-color);
+}
+
+.todayTable .btnTd {
+  background-color: var(--color-1);
+}
+
+.todayTable th {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 0 1rem 2rem;
+  text-align: center;
+  border-bottom: #f79211 solid 2px;
+}
+
+.todayTable tr:first-child td {
+  padding-top: 1rem;
+}
+
+.todayTable td:first-child {
+  padding-left: 1rem;
+}
+
+.todayTable td:not(:first-child) {
+  text-align: center;
+}
+
+.todayTable td {
+  padding: 0.3rem 0.5rem;
+  font-size: 1rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+#lastRow td {
+  padding-bottom: 1rem;
+}
+
+#sumUpRow td {
+  padding: 2rem 1rem;
+  border-top: #f79211 solid 2px;
+}
+
+#targetRow td {
+  padding: 6rem 1rem 1rem;
+}
+
+#leftToConsumeRow td {
+  padding: 1rem 1rem;
+  border-top: #f79211 solid 2px;
+}
+
+.todayTable button {
+  border-radius: 4px;
+  background: none;
+  padding: 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: white;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.todayDeleteBtn {
+  margin-left: 2rem;
+  border: 2px solid red;
+}
+
+.todayDeleteBtn:hover {
+  background-color: red;
+}
+
+.todayEdit-btn {
+  border: 2px solid #f79211;
+}
+
+.todayEditBtn:hover {
+  background-color: #f79211;
+}

@@ -1,6 +1,7 @@
 main {
-  padding: 6rem 4rem;
-  background: linear-gradient(to right, var(--color-1), var(--color-1));
+  padding: 5rem 4rem;
+  background: linear-gradient(113deg, rgba(49, 51, 56, 0.86) 49.91%, rgba(122, 122, 140, 0.3) 98.37%);
+  /* background-color: var(--color-1); */
   color: var(--color-8);
   border-radius: 1rem 0 0 0;
 
@@ -18,6 +19,7 @@ main {
   display: grid;
   width: 100%;
   grid-template-columns: repeat(auto-fit, 300px);
+  gap: 3rem;
   justify-content: center;
 }
 
@@ -29,29 +31,16 @@ main {
   width: 300px;
   height: 450px;
 
-  box-shadow: -1rem -1rem 3rem black;
+  box-shadow: -1rem -1rem 4rem black;
   border-radius: 1rem;
   background: var(--bg-color);
   z-index: 1;
 }
 
-/* .meal-container:not(.first-column){
-    margin-left: -2rem;
-}
-.meal-container:not(.first-row){
-    margin-top: -2rem;
-}  */
-/* .meal-container:hover{
-    transform: translateY(-2rem);
-}
-.meal-container:hover ~ .meal-container{
-    transform: translate(5rem, 5rem);
-    
-} */
 
 .header {
   width: 100%;
-  height: 75%;
+  height: 76%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -62,15 +51,18 @@ main {
 
 .header img {
   width: calc(100% - 2rem);
-  height: 70%;
   margin: 1rem;
-  box-sizing: border-box;
+  height: 70%;
   border-radius: 1rem;
 }
 
 .mealLabel {
   width: 80%;
-  margin-bottom: 0.5rem;
+  height: calc(30% - 2.75rem);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: flex-end;
+
   text-align: left;
   font-size: 1.2rem;
   font-weight: 500;
@@ -87,25 +79,110 @@ main {
   opacity: 1;
 }
 
-.addButton,
-.deleteButton {
-  margin: 0.5rem 0 0;
+.upperButtonContainer{
   width: 80%;
-  padding: 0.5rem;
-  border-radius: 2rem;
-  background: none;
-  border: solid 2px var(--border-color);
-  color: var(--border-color);
-  opacity: 0.75;
-  font-size: 1rem;
-  font-weight: 500;
+  height: 12%;
+  display: flex;
+  align-items: flex-end;
 }
 
-.buttonContainer {
-  display: flex;
+.lowerButtonContainer {
   width: 80%;
-  justify-content: center;
+  height: 12%;
+  display: flex;
+  align-items: flex-start;
 }
+
+/* TABLE */
+.macroTable {
+  width: 80%;
+  color: white;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  margin-top: 1.5rem;
+}
+/* First row of thead */
+.theadFirstRow {
+  font-weight: 500;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+  color: var(--main-color);
+}
+.theadFirstRow th {
+  text-align: center;
+  padding-bottom: 1rem !important;
+}
+
+/* Second row of thead */
+.theadSecondRow {
+  font-weight: 500;
+  letter-spacing: 1px;
+  border-bottom: var(--main-color) solid 2px;
+}
+/* Second row of thead, first column: */
+.theadSecondRow th:first-child{
+  padding-bottom: 0.5rem !important;
+  text-align: left;
+  width: 50%;
+} 
+
+/* Second row of thead, second column: */
+.theadSecondRow th:nth-child(2) {
+  padding-bottom: 0.5rem !important;
+  text-align: center;
+  width: 50%;
+}
+
+/* First row of the tbody:  */
+.macroTable tr:first-child td {
+  padding-top: 0.5rem !important;
+}
+
+.macroTable th,
+.macroTable td {
+  font-weight: 300;
+  letter-spacing: 1px;
+  padding: 0 0.5rem;
+}
+
+/* Every data element in second column: */
+.macroTable td:nth-child(2),
+.macroTable th:nth-child(2) {
+  text-align: center;
+  /* Look editViewInput bellow */
+  height: calc(1rem + 4px + 0.4rem);
+}
+
+.editViewInput {
+  width: 100px;
+  height: 1rem;
+  margin: 0;
+  padding: 0.2rem 0;
+  box-sizing: content-box;
+
+  font-size: 0.8rem;
+  font-weight: 300;
+  font-family: ubuntu, arial;
+  letter-spacing: 1px;
+  text-align: center;
+  background: none;
+
+  color: var(--border-color);
+  border: solid 2px rgba(255, 255, 255, 0);
+}
+
+.editViewInput:focus-within {
+  outline: none;
+  color: white;
+  font-family: ubuntu, arial;
+  font-weight: 300;
+  border: solid 2px var(--border-color);
+  border-radius: 1rem;
+  padding: 0.2rem 0;
+}
+
+
+/* BUTTONS */
 
 .infoButton,
 .editButton,
@@ -113,17 +190,42 @@ main {
 .confirmButton,
 .cancelButton,
 .editImageButton,
-.editUnitButton {
+.deleteButton {
   flex: 1;
+  height: 1.3rem;
+  box-sizing: content-box;
+  margin: 0 0.5rem;
   padding: 0.5rem;
-  margin: 0.5rem 0.5rem 1rem;
+
+  font-size: 1rem;
+  font-weight: 500;
   background: none;
   border: solid 2px var(--border-color);
   color: var(--border-color);
   opacity: 0.75;
   border-radius: 2rem;
+}
+
+.addButton {
+  width: 100%;
+  padding: 0.5rem;
+  height: 1.3rem;
+  box-sizing: content-box;
+  margin: 0.5rem 0;
+
   font-size: 1rem;
   font-weight: 500;
+  border-radius: 2rem;
+  background: none;
+  border: solid 2px var(--border-color);
+  color: var(--border-color);
+  opacity: 0.75;
+}
+
+.editImageButton,
+.deleteButton {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .infoButton,
@@ -134,8 +236,8 @@ main {
 }
 
 .editButton,
-.editUnitButton,
-.cancelButton {
+.cancelButton,
+.deleteButton {
   margin-right: 0;
 }
 
@@ -147,110 +249,4 @@ main {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   opacity: 1;
-}
-
-
-
-/* INFO VIEW */
-.macroTable {
-  width: 80%;
-  color: white;
-  border-collapse: collapse;
-  font-size: 0.8rem;
-  margin-top: 2rem;
-}
-
-/* First row of thead: */
-.macroTable thead th {
-  padding-bottom: 1rem !important;
-  font-weight: 500;
-  letter-spacing: 1px;
-}
-
-/* First row of thead, first column: */
-.macroTable thead th:first-child {
-  text-align: left;
-  border-bottom: #f79211 solid 2px;
-  width: 50%;
-}
-
-/* First row of thead, second column: */
-.macroTable thead th:nth-child(2) {
-  text-align: right;
-  border-bottom: #f79211 solid 2px;
-  width: 50%;
-}
-
-/* First row of the tbody:  */
-.macroTable tr:first-child td {
-  padding-top: 1rem !important;
-}
-
-/* .macroTable tr{
-  margin: 0;
-  padding: 0;
-  height: 1rem;
-} */
-
-.macroTable th,
-.macroTable td {
-  font-weight: 300;
-  letter-spacing: 1px;
-  padding: 0 0.5rem;
-}
-
-.infoView.macroTable th,
-.infoView.macroTable td {
-  padding: 4px 0.5rem;
-}
-
-/* Every data element in second column: */
-.macroTable td:nth-child(2) {
-  text-align: center;
-}
-
-
-/* EDIT VIEW */
-.deleteButton {
-  margin: 0.5rem 0 1rem;
-}
-
-.confirmButton,
-.cancelButton {
-  margin-top: 0.5rem;
-  margin-bottom: 0;
-}
-
-.editImageButton,
-.editUnitButton {
-  margin-top: 0.5rem;
-  margin-bottom: 0;
-}
-
-.editViewInput {
-  color: var(--border-color);
-  font-family: ubuntu, arial;
-  font-size: 0.8rem;
-  letter-spacing: 1px;
-  font-weight: 300;
-  text-align: center;
-  background: none;
-  padding: 0.2rem 0;
-  width: 100px;
-  border: solid 2px rgba(255, 255, 255, 0);
-
-  margin: 0;
-  height: 1rem;
-  box-sizing: content-box;
-  
-}
-
-.editViewInput:focus-within {
-  outline: none;
-  color: white;
-  font-family: ubuntu, arial;
-  font-weight: 300;
-  border: solid 2px var(--border-color);
-  border-radius: 1rem;
-  padding: 0.2rem 0;
 }

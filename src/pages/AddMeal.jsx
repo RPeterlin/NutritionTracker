@@ -63,6 +63,10 @@ function AddMeal() {
           <input type="text" name="unit" placeholder="Tray" />
         </div>
         <div className={styles.labelInput}>
+          <label htmlFor="unit">Category: </label>
+          <input type="text" name="cat" placeholder="Breakfast, lunch..." />
+        </div>
+        <div className={styles.labelInput}>
           <label htmlFor="calories">Calories per unit: </label>
           <input type="text" name="calories" placeholder="999 kcal" />
         </div>

@@ -25,7 +25,7 @@
   box-sizing: border-box;
   height: 100%;
   width: 80%;
-  padding: 3rem 2rem 0;
+  padding: 3rem 1rem 0;
   font: ubuntu, arial;
 }
 
@@ -37,9 +37,13 @@
   justify-content: space-around;
 }
 
-.labelInput:nth-child(2),
-.labelInput:nth-child(8) {
+.labelInput:nth-child(3),
+.labelInput:nth-child(9) {
+  padding-bottom: 1rem;
   border-bottom: #f79211 solid 2px;
+}
+.labelInput:nth-child(4){
+  padding-top: 1rem;
 }
 
 .labelInput label {
@@ -57,7 +61,7 @@
   padding: 0.4rem;
   height: 2rem;
   margin: 0;
-  width: 40%;
+  width: 50%;
 }
 
 .labelInput input:focus-within {
@@ -71,7 +75,7 @@
 }
 
 .formButtonContainer {
-  margin-top: auto;
+  margin: auto 0;
   display: flex;
   flex-direction: column;
   align-self: center;
@@ -82,41 +86,21 @@
 #cancelButton,
 #addImageButton {
   margin: 0 0 1rem;
-  padding: 0.5rem;
+  padding: 0.7rem;
   border-radius: 2rem;
+  height: 1.3rem;
+  box-sizing: content-box;
   background: none;
   border: solid 2px var(--border-color);
   color: var(--border-color);
   opacity: 0.75;
   font-size: 1rem;
   font-weight: 500;
+  background-clip: text;
 }
 
-#addImageButton {
-  height: 7rem;
-  border-radius: 4rem;
-  position: relative;
-}
-
-#addImageButton::before {
-  content: "+";
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 5rem;
-}
-
-#addImgButtonTxt {
-  width: 100%;
-  position: absolute;
-  top: 70%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-#cancelButton {
-  margin-bottom: 3rem;
+#cancelButton{
+  margin-bottom: 0;
 }
 
 #submitButton:hover,

@@ -24,6 +24,7 @@ export async function action(request, deleteElement, updateElement){
 
     case 'confirm':
       const data = Object.fromEntries(formData);
+      console.log(data);
       delete data.button;
 
       const filteredData = {};

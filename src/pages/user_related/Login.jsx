@@ -1,6 +1,7 @@
 import React from 'react'
 import { Form, Link, redirect, useActionData, useLoaderData, useNavigation } from 'react-router-dom';
 import styles from '../../styles/Login.module.css';
+import mapErrorMessages from '../../utils';
 
 
 export async function loader(request, currentUser){
@@ -27,11 +28,11 @@ export async function action(request, login){
   try {
     await login(email, pwd);
     const pathname = new URL(request.url).searchParams.get("redirectTo") || "/";
-    console.log(pathname);
     return redirect(pathname);
   }
   catch (err) {
-    return err.message;
+    console.log(err.message);
+    return mapErrorMessages(err.message);
   }
 }
 
@@ -49,21 +50,29 @@ function Login() {
   const formStatus = navigation.state;
 
   return (
-    <div className={styles.content}>
-      <div className={styles.loginContainer}>
-        <h1>Sign in to your account</h1>
-        {wasRedirected && <h3 className={styles.redirectMessage}>You must log in first</h3>}
-        {errorMessage && <h3 className={styles.errorMessage}>{errorMessage}</h3>}
-        <Form method='post' className={styles.loginForm} replace>
-          <input name='email' type='email' placeholder='Email address' />
-          <input name='password' type='password' placeholder='Password' />
-          <button type='submit' disabled={formStatus === 'submitting'}>
-            {formStatus === 'submitting' ? 'Logging in...' : 'Log in'}
-          </button>
-        </Form>
-        <div className={styles.linkTextSU}>Don't have an account? <Link to='/signup'>Sign up</Link></div>
-        <div className={styles.linkTextRP}>Can't sign in? <Link to='/password-reset'>Reset password</Link></div>
-      </div>
+    <div className={styles.loginContainer}>
+      <h1>Log in</h1>
+      {wasRedirected && !errorMessage 
+      ? 
+        <h3 className={styles.redirectMessage}>You must log in first</h3>
+      :
+        errorMessage && <h3>{errorMessage}</h3>
+      }
+      <Form method='post' className={styles.loginForm} replace>
+        <div className={styles.labelInput}>
+          <label htmlFor='email'>Email</label>
+          <input name='email' type='email' />
+        </div>
+        <div className={styles.labelInput}>
+          <label htmlFor='password'>Password</label>
+          <input name='password' type='password' />
+        </div>
+        <button type='submit' disabled={formStatus === 'submitting'}>
+          {formStatus === 'submitting' ? 'Logging in...' : 'Log in'}
+        </button>
+      </Form>
+      <div className={styles.linkTextSU}>Don't have an account? <Link to='/signup'>Sign up</Link></div>
+      <div className={styles.linkText}>Can't sign in? <Link to='/password-reset'>Reset password</Link></div>
     </div>
   );
 }

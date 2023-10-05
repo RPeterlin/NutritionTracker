@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import '../styles/navbar.css';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -16,11 +16,14 @@ function Layout() {
 function Navbar() {
 
   const { currentUser } = useAuth();
+  // If we are on either login, signup or password-reset pages, the navbar can shrink further!
+  const currentRoute = useLocation();
+  const canShrink = currentRoute.pathname === '/login' || currentRoute.pathname === '/signup' ||currentRoute.pathname === '/password-reset';
 
   if (!currentUser){
     return (
       <div className='navbar'>
-      <ul className='navbar-nav'>
+      <ul className={canShrink ? 'navbar-nav shrink' : 'navbar-nav'}>
         <NavItem label="#Logo" dest="/"/>
         <NavItem label="Log in" dest="login" />
       </ul>

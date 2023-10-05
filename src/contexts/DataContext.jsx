@@ -2,7 +2,6 @@ import React, { createContext, useContext, useEffect, useRef, useState } from 'r
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from './AuthContext';
-import { redirect } from 'react-router-dom';
 
 
 const DataContext = createContext();
@@ -17,7 +16,7 @@ export function DataProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const { currentUser } = useAuth();
 
-
+  // return updateDoc(doc(db, 'users', currentUser.uid, 'meals', id), diff);
   // On user-change, apply listeners
   useEffect(() => {
 
@@ -48,33 +47,66 @@ export function DataProvider({ children }) {
       userID: uid,
       email: email,
       targetMacros: {
-        calories: null,
-        tfat: null,
-        sfat: null,
-        carbs: null,
-        sugars: null,
-        protein: null,
+        isSet: false,
+        values: {
+          calories: null,
+          tfat: null,
+          sfat: null,
+          carbs: null,
+          sugar: null,
+          protein: null,
+        }
       },
       todayList: {},
     }
     return setDoc(doc(db, 'users', uid), docData);
   }
 
-  function updateUser(props){
-    // TODO
-    // Update target_macros and/or email
+  function updateUser(type, arg){
+
+    if (type === 'email'){
+      // Update user's email
+      return updateDoc(doc(db, 'users', currentUser.uid), {...currentUserData, email: arg});
+    }
+    else {
+      // Update user's target macros
+
+      // Filter keys that have non-empty & numeric values
+      const validKeys = Object.keys(arg).filter(k => arg[k] !== '' && !isNaN(arg[k]));
+      if (validKeys.length === 0){
+        return null;
+      }
+
+      // Get the current targetMacros
+      const { isSet, values } = {...currentUserData.targetMacros};
+      // Update the values of targetMacros
+      validKeys.forEach(e => values[e] = arg[e]);
+
+      // If this is the first time targetMacros are being set, set the remaining key-values pairs to default (0)
+      if (!isSet) {
+        Object.keys(values).map(k => {
+          if (!validKeys.includes(k)){
+            values[k] = 0;
+          }
+        });
+      }
+
+      return updateDoc(doc(db, 'users', currentUser.uid), {...currentUserData, targetMacros: {isSet: true, values: values}});
+    }
   }
 
 
   //
   // LIBRARY section
   //
-  function addToLibrary(data){
 
+
+  function addToLibrary(data){
     data.tag = 'no-tag';
     data.image = 'todo-implement-adding-images';
     return addDoc(collection(db, 'users', currentUser.uid, 'meals'), data);
   }
+
 
   function updateLibrary(id, data){
 
@@ -84,8 +116,14 @@ export function DataProvider({ children }) {
     }
 
     // Get the old version of the meal
-    const currentMeal = currentMealData.filter(meal => meal.id === id)[0];
-
+    const currentMealDataCopy = {...currentMealData};
+    let currentMeal = null;
+    Object.keys(currentMealDataCopy).map(keyName => {
+      if (currentMealDataCopy[keyName].id === id) {
+        currentMeal = currentMealDataCopy[keyName];
+      }
+    });
+    
     // Check if there is any difference between the old and new version
     const diff = {}
     Object.keys(data).map(k => {
@@ -103,6 +141,7 @@ export function DataProvider({ children }) {
     return updateDoc(doc(db, 'users', currentUser.uid, 'meals', id), diff);
   }
 
+
   function deleteFromLibrary(id){
     return deleteDoc(doc(db, 'users', currentUser.uid, 'meals', id));
   }
@@ -111,26 +150,40 @@ export function DataProvider({ children }) {
   //
   // TODAY-LIST section
   //
-  function addToTodayList(data){
-    const todayList = currentUserData.todayList;
-    const id = data.id;
-    delete data.id;
 
-    if (id in todayList){
-      todayList[id].count += 1;
+
+  function addToTodayList(data){
+
+    const todayList = {...currentUserData.todayList};
+    if (todayList[data.id]){
+      todayList[data.id] += 1;
     }
     else {
-      todayList[id] = {meal: data, count: 1};
+      todayList[data.id] = 1;
     }
+    console.log(todayList);
     return updateDoc(doc(db, 'users', currentUser.uid), {todayList: todayList});
   }
+
+
   function updateTodayList(id, amount){
-    currentUserData.todayList[id].count = amount;
-    return updateDoc(doc(db, 'users', currentUser.uid), {todayList: currentUserData.todayList});
+    
+    if (amount === 0){
+      return deleteFromTodayList(id);
+    }
+    const todayList = {...currentUserData.todayList};
+    todayList[id] = Number(amount);
+    return updateDoc(doc(db, 'users', currentUser.uid), {todayList: todayList});
   }
+
   function deleteFromTodayList(id){
-    delete currentUserData.todayList[id];
-    return updateDoc(doc(db, 'users', currentUser.uid), {todayList: currentUserData.todayList});
+    const todayList = {...currentUserData.todayList};
+    delete todayList[id];
+    return updateDoc(doc(db, 'users', currentUser.uid), {todayList: todayList});
+  }
+  
+  function clearTodayList(){
+    return updateDoc(doc(db, 'users', currentUser.uid), {...currentUserData, todayList: {}});
   }
 
 
@@ -145,6 +198,7 @@ export function DataProvider({ children }) {
     addToTodayList,
     updateTodayList,
     deleteFromTodayList,
+    clearTodayList,
   }
 
   return (

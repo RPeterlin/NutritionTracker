@@ -1,14 +1,15 @@
-main {
-  padding: 5rem 4rem;
+.main {
+  box-sizing: border-box;
+  padding: 5rem 2rem;
+  width: 80%;
+  min-width: 900px;
+  min-height: calc(100vh - var(--navbar-height));
+
   background: linear-gradient(113deg, rgba(49, 51, 56, 0.86) 49.91%, rgba(122, 122, 140, 0.3) 98.37%);
-  /* background-color: var(--color-1); */
   color: var(--color-8);
-  border-radius: 1rem 0 0 0;
-
-  min-height: calc(100vh - 4rem);
-
-  /* display: flex;
-  justify-content: center; */
+  border-radius: 1rem 1rem 0 0;
+  align-self: flex-start;
+  display: flex;
 }
 
 .blurred{
@@ -56,7 +57,8 @@ main {
   border-radius: 1rem;
 }
 
-.mealLabel {
+.mealLabel,
+.header h3 {
   width: 80%;
   height: calc(30% - 2.75rem);
   margin-bottom: 0.75rem;
@@ -68,6 +70,10 @@ main {
   font-weight: 500;
   color: var(--main-color);
   opacity: 0.75;
+}
+
+.header h3 {
+  color: rgb(222, 103, 103);
 }
 
 .meal:hover .mealLabel {
@@ -96,7 +102,7 @@ main {
 /* TABLE */
 .macroTable {
   width: 80%;
-  color: white;
+  color: var(--txt-color);
   border-collapse: collapse;
   font-size: 0.8rem;
   margin-top: 1.5rem;
@@ -167,8 +173,7 @@ main {
   text-align: center;
   background: none;
 
-  color: var(--border-color);
-  border: solid 2px rgba(255, 255, 255, 0);
+  border: solid 2px transparent;
 }
 
 .editViewInput:focus-within {
@@ -179,6 +184,9 @@ main {
   border: solid 2px var(--border-color);
   border-radius: 1rem;
   padding: 0.2rem 0;
+}
+.editViewInput::placeholder {
+  color: var(--border-color);
 }
 
 
@@ -249,4 +257,21 @@ main {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   opacity: 1;
+}
+
+
+.unsetContainer {
+  align-self: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  /* background-color: red; */
+  color: var(--main-color);
+}
+
+.unsetContainer p {
+  width: 40%;
+  text-align: center;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
 }

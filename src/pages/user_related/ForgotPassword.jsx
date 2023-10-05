@@ -1,7 +1,7 @@
 import React from 'react'
-import { Form, redirect, Navigate, useActionData, useNavigation } from 'react-router-dom'
-import { useAuth } from '../../contexts/AuthContext';
-import styles from '../../styles/ForgotPassword.module.css';
+import { Form, redirect, Navigate, useActionData, useNavigation, Link } from 'react-router-dom'
+import styles from '../../styles/Login.module.css';
+import mapErrorMessages from '../../utils';
 
 
 export async function loader(request, currentUser){
@@ -23,7 +23,7 @@ export async function action(request, resetPassword){
     return redirect('/login');
   }
   catch (err) {
-    return "err.message";
+    return mapErrorMessages(err.message);
   }
 }
 
@@ -35,20 +35,19 @@ function ForgotPassword() {
   const formStatus = navigation.state;
 
   return (
-    <div className={styles.content}>
-      <div className={styles.loginContainer}>
-        <h1>Forgot password?</h1>
-        {errorMessage && <h3>{errorMessage}</h3>}
-        <Form method='post' replace className={styles.loginForm}>
-          <div className={styles.labelInput}>
-            <label htmlFor='email'>Email: </label>
-            <input name='email' type='email' />
-          </div>
-          <button type='submit' disabled={formStatus === 'submitting'}>
-            {formStatus === 'submitting' ? 'Resetting password' : 'Reset password'}
-          </button>
-        </Form>
-      </div>
+    <div className={styles.loginContainer}>
+      <h1>Forgot password?</h1>
+      {errorMessage && <h3>{errorMessage}</h3>}
+      <Form method='post' replace className={styles.loginForm}>
+        <div className={styles.labelInput}>
+          <label htmlFor='email'>Email: </label>
+          <input name='email' type='email' />
+        </div>
+        <button type='submit' disabled={formStatus === 'submitting'}>
+          {formStatus === 'submitting' ? 'Resetting password' : 'Reset password'}
+        </button>
+      </Form>
+      <div className={styles.linkText}>Back to <Link to='/login'>log in</Link></div>
     </div>
   )
 }

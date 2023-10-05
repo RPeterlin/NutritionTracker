@@ -30,6 +30,7 @@ function App() {
     currentUser,
     signup, 
     login, 
+    logout,
     handleUpdateEmail, 
     handleUpdatePassword,
     resetPassword,
@@ -37,6 +38,7 @@ function App() {
 
   const {
     addUser,
+    updateUser,
     addToLibrary,
     updateLibrary,
     deleteFromLibrary,
@@ -77,7 +79,7 @@ function App() {
         path='/profile' 
         element={<Profile />} 
         loader={({ request }) => profileLoader(request, currentUser)}
-        action={async ({ request }) => await profileAction(request, handleUpdateEmail, handleUpdatePassword)}
+        action={async ({ request }) => await profileAction(request, handleUpdateEmail, handleUpdatePassword, logout, updateUser)}
       />
       <Route 
         path='/today-list' 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet, redirect, useLoaderData, useLocation } from 'react-router-dom';
+import { Link, Outlet, redirect, useLoaderData, useLocation } from 'react-router-dom';
 import Meal from '../components/Meal';
 import styles from '../styles/Dashboard.module.css';
 import Sidebar from '../components/Sidebar';
@@ -21,19 +21,40 @@ export default function Dashboard() {
   const blurred = location[location.length-1] === 'add-meal';
 
   const { currentMealData } = useData();
+  if (!currentMealData){
+    return <></>;
+  }
 
   // TODO: CONDITIONALLY RENDER ONLY MEALS THAT BELONG TO SUBSECTION IN VIEW (BREAKFAST, LUNCH...)!
 
-  return (
-    <>
-      <Sidebar blurred={blurred}/>
-      <main className={blurred ? styles.blurred : ''}>
-        <div className={styles.mainContent}>
-          {currentMealData && currentMealData.map(item => 
-            <Meal meal={item} key={item.id}/>)}
+  if (!currentMealData.length){
+    return (
+      <>
+        <div className={`${blurred ? styles.blurred : ''} ${styles.main}`}>
+          <div className={styles.unsetContainer}>
+            <p>You haven't added any meals to your library yet. Whenever you <Link to='/dashboard/add-meal' style={{textDecoration: 'underline'}}>
+                add a meal
+              </Link> to your library, it appears on the dashboard.</p>
+          </div> 
         </div>
-      </main>
-      <Outlet />
-    </>
-  );
+        <Outlet />
+      </>
+    );
+  }
+  else {
+    return (
+      <>
+        {/* <Sidebar blurred={blurred}/> */}
+        <div className={`${blurred ? styles.blurred : ''} ${styles.main}`}>
+          <div className={styles.mainContent}>
+            {currentMealData.map(item => 
+              <Meal meal={item} key={item.id}/>)}
+          </div>
+        </div>
+        <Outlet />
+      </>
+    );
+  }
+
+  
 }

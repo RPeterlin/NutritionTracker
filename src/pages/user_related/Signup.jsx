@@ -1,7 +1,7 @@
 import React from 'react';
-import { Form, Link, Navigate, redirect, useActionData, useNavigation } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import styles from '../../styles/Signup.module.css'
+import { Form, Link, redirect, useActionData, useNavigation } from 'react-router-dom';
+import styles from '../../styles/Login.module.css';
+import mapErrorMessages from '../../utils';
 
 
 export async function loader(request, currentUser){
@@ -21,8 +21,7 @@ export async function action(request, signup, addUser){
   const confPwd = formData.get('pwdConf');
 
   if (pwd !== confPwd){
-    // alert("Password don't match!");
-    return "Passwords don't match";
+    return "Passwords don't match.";
   }
 
   try {
@@ -31,7 +30,8 @@ export async function action(request, signup, addUser){
     return redirect('/profile');
   }
   catch (err){
-    return err.message;
+    console.log(err.message);
+    return mapErrorMessages(err.message);
   }
 }
 
@@ -43,29 +43,27 @@ function Signup() {
   const formStatus = navigation.state;
 
   return (
-    <div className={styles.content}>
-      <div className={styles.loginContainer}>
-        <h1>Create an account</h1>
-        {errorMessage && <h3>{errorMessage}</h3>}
-        <Form method='post' className={styles.loginForm} replace>
-          <div className={styles.labelInput}>
-            <label htmlFor='email'>Email</label>
-            <input name='email' type='email' />
-          </div>
-          <div className={styles.labelInput}>
-            <label htmlFor='pwd'>Password</label>
-            <input name='pwd' type='password' />
-          </div>
-          <div className={styles.labelInput}>
-            <label htmlFor='pwdConf'>Confirm password</label>
-            <input name='pwdConf' type='password' />
-          </div>
-          <button type='submit' disabled={formStatus === 'submitting'}>
-            {formStatus === 'submitting' ? 'Signing up...' : 'Signup'}
-          </button>
-        </Form>
-        <div className={styles.linkText}>Already have an account? <Link to='/login'>Sing in</Link></div>
-      </div>
+    <div className={styles.loginContainer}>
+      <h1>Create an account</h1>
+      {errorMessage && <h3>{errorMessage}</h3>}
+      <Form method='post' className={styles.loginForm} replace>
+        <div className={styles.labelInput}>
+          <label htmlFor='email'>Email</label>
+          <input name='email' type='email' />
+        </div>
+        <div className={styles.labelInput}>
+          <label htmlFor='pwd'>Password</label>
+          <input name='pwd' type='password' />
+        </div>
+        <div className={styles.labelInput}>
+          <label htmlFor='pwdConf'>Confirm password</label>
+          <input name='pwdConf' type='password' />
+        </div>
+        <button type='submit' disabled={formStatus === 'submitting'}>
+          {formStatus === 'submitting' ? 'Signing up...' : 'Sign up'}
+        </button>
+      </Form>
+      <div className={styles.linkText}>Already have an account? <Link to='/login'>Log in</Link></div>
     </div>
   );
 }

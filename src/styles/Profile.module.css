@@ -1,0 +1,265 @@
+.main {
+  box-sizing: border-box;
+  padding: 5rem 2rem;
+  width: 50%;
+  min-width: 900px;
+  min-height: calc(100vh - var(--navbar-height));
+
+  /* background: linear-gradient(113deg, rgba(49, 51, 56, 0.86) 49.91%, rgba(122, 122, 140, 0.3) 98.37%); */
+  color: var(--color-8);
+  border-radius: 1rem 1rem 0 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.globalContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.updateContainer,
+.targetContainer {
+  width: 26rem;
+  height: 34rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 2px solid var(--border-color);
+  border-radius: 1rem;
+  letter-spacing: 1px;
+
+  color: white;
+}
+.updateContainer {
+  margin-right: 3rem;
+}
+
+.updateContainer h1,
+.targetContainer h1 {
+  box-sizing: border-box;
+  margin: 3rem 2rem 1rem;
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-align: center;
+  color: var(--main-color);
+}
+
+.globalContainer .form {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 2rem 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fail {
+  margin-bottom: 3rem;
+  box-sizing: border-box;
+  padding: 0.5rem 2rem 0rem;
+  width: 80%;
+  color: rgb(222, 103, 103);
+  text-align: center;
+}
+
+.success {
+  margin-bottom: 3rem;
+  box-sizing: border-box;
+  padding: 0.5rem 2rem 0rem;
+  width: 80%;
+  color: rgb(89, 210, 89);
+  text-align: center;
+}
+
+
+.buttonContainer {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 2rem;
+}
+.updateContainer .buttonContainer {
+  width: 90%;
+}
+
+.globalContainer button {
+  flex: 1;
+  height: 1.5rem;
+  box-sizing: content-box;
+  padding: 0.5rem;
+
+  font-size: 1rem;
+  font-weight: 500;
+  background: none;
+  border: 2px solid var(--main-color);
+  border-radius: 3rem;
+  color: var(--main-color);
+}
+
+.rightButton {
+  margin-left: 0.5rem;
+}
+
+.leftButton {
+  margin-right: 0.5rem;
+}
+
+.globalContainer button:hover {
+  background-color: var(--main-color);
+  color: white;
+}
+
+
+
+
+
+
+/* UPDATE CATEGORY */
+
+.labelInput {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: 1.7rem 0rem 0;
+}
+
+.labelInput label {
+  font-size: 1.2rem;
+  margin-bottom: 0.6rem;
+  color: var(--main-color);
+}
+
+.labelInput input {
+  box-sizing: border-box;
+  height: 2.3rem;
+  width: 100%;
+
+  margin: 0;
+
+  border-radius: 3rem;
+  border: none;
+  border: 2px solid rgba(0, 0, 0, 0);
+
+  background-color: var(--border-color);
+
+  font-size: 1rem;
+  padding-left: 1rem;
+  color: white;
+}
+
+input:focus {
+  border: 2px solid var(--main-color);
+  outline: none;
+}
+
+
+/* TARGET CATEGORY */
+
+.macroTable {
+  width: 100%;
+  color: var(--txt-color);
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+/* First row of thead */
+.theadRow {
+  font-weight: 500;
+  letter-spacing: 1px;
+  border-bottom: var(--main-color) solid 2px;
+}
+
+/* First row of thead, first column: */
+.theadRow th:first-child {
+  padding-bottom: 1rem !important;
+  border-bottom: var(--main-color) solid 2px !important;
+  text-align: left;
+  width: 50%;
+}
+
+/* Second row of thead, second column: */
+.theadRow th:nth-child(2) {
+  padding-bottom: 1rem !important;
+  text-align: center;
+  width: 50%;
+}
+
+/* First row of the tbody:  */
+.macroTable tr:first-child td {
+  padding-top: 1rem !important;
+}
+
+.macroTable th,
+.macroTable td {
+  font-weight: 300;
+  letter-spacing: 1px;
+  padding: 0.2rem 0.5rem;
+  padding: 0.2rem 0;
+}
+
+/* Every data element in second column: */
+.macroTable td:nth-child(2),
+.macroTable th:nth-child(2) {
+  text-align: center;
+  height: calc(1rem + 4px + 0.4rem);
+  width: 30%;
+}
+
+.editViewInput,
+.inputDiv {
+  width: 100%;
+  height: 1.2rem;
+  margin: 0;
+  padding: 0.2rem 0;
+  box-sizing: content-box;
+
+  font-size: 0.8rem;
+  font-family: ubuntu, arial;
+  text-align: center;
+  letter-spacing: 1px;
+  background: none;
+
+  border: solid 2px transparent;
+  color: var(--txt-color);
+}
+.inputDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.editViewInput:focus-within {
+  outline: none;
+  color: white;
+  font-family: ubuntu, arial;
+  font-weight: 300;
+  border: solid 2px var(--border-color);
+  border-radius: 1rem;
+  padding: 0.2rem 0;
+}
+
+.editViewInput::placeholder {
+  color: var(--border-color);
+}
+
+
+.unsetContainer {
+  height: 100%;
+  /* background-color: red; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.unsetContainer .header,
+.unsetContainer .buttonContainer {
+  text-align: center;
+  width: 90%;
+  color: var(--main-color);
+  font-size: 1.1rem;
+}

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/Dashboard.module.css';
-import { Form, redirect } from 'react-router-dom';
+import { Form, useActionData } from 'react-router-dom';
 
 import image from '../assets/images/image0.jpg';
 import { useData } from '../contexts/DataContext';
+import { tableHeaders, numericInputCheck } from '../utils';
 
 
 
-export async function action(request, deleteElement, updateElement){
+export async function action(request, deleteFromLibrary, updateLibrary){
   const formData = await request.formData();
   const buttonInfo = formData.get('button');
   const [actionType, mealID] = buttonInfo.split(',');
@@ -19,21 +20,29 @@ export async function action(request, deleteElement, updateElement){
       break;
 
     case 'delete':
-      await deleteElement(mealID);
+      await deleteFromLibrary(mealID);
       return null;
 
     case 'confirm':
       const data = Object.fromEntries(formData);
-      console.log(data);
       delete data.button;
 
+      // Filter only the inputs that changed
       const filteredData = {};
       Object.keys(data).map(k => {
         if (data[k]){
           filteredData[k] = data[k]
         }
-      })
-      await updateElement(mealID, filteredData);
+      });
+
+      // Check if fields are numeric
+      const invalidKey = numericInputCheck(filteredData, ['unit']);
+      if (invalidKey){
+        return `"${tableHeaders[invalidKey]}" has to be a number. | ${mealID}`;
+      }
+
+      // Update the meal in the library
+      await updateLibrary(mealID, filteredData);
       break;
 
     default:
@@ -46,7 +55,9 @@ export async function action(request, deleteElement, updateElement){
 function Meal({ meal }){
   
   const [view, setView] = useState("normal");
+  const [ignoreErr, setIgnoreErr] = useState(false);
   const { addToTodayList } = useData();
+  let err = useActionData();
 
   // Set view to normal if any of the listed properties changed
   useEffect(() => {
@@ -61,6 +72,8 @@ function Meal({ meal }){
     return null;
   }
 
+  const [errorMessage, errorID] = err ? err.split(' | ') : [false, false];
+
   switch (view){
     case "normal":
       return (
@@ -74,7 +87,10 @@ function Meal({ meal }){
           </div>
           <div className={styles.lowerButtonContainer}>
             <button className={styles.infoButton} onClick={() => setView("info")}>Info</button>
-            <button className={styles.editButton} onClick={() => setView("edit")}>Edit</button>
+            <button className={styles.editButton} onClick={() => {
+              setView("edit");
+              setIgnoreErr(true);
+            }}>Edit</button>
           </div>
         </div>
       );
@@ -93,10 +109,10 @@ function Meal({ meal }){
                 </tr>
               </thead>
               <tbody>
-                {macros.map((keyName, i) => 
+                {Object.keys(tableHeaders).map((keyName, i) => 
                   <TRow
                     key={i} 
-                    ind={i}
+                    ind={keyName}
                     view={view} 
                     amount={meal[keyName]}>
                   </TRow>
@@ -110,7 +126,10 @@ function Meal({ meal }){
           </div>
           <div className={styles.lowerButtonContainer}>
             <button className={styles.backButton} onClick={() => setView("normal")}>Back</button>
-            <button className={styles.editButton} onClick={() => setView("edit")}>Edit</button>
+            <button className={styles.editButton} onClick={() => {
+              setView("edit");
+              setIgnoreErr(true);
+            }}>Edit</button>
           </div>
         </div>
       );
@@ -137,17 +156,22 @@ function Meal({ meal }){
                 </tr>
               </thead>
               <tbody>
-                {macros.map((keyName, i) => 
+                {Object.keys(tableHeaders).map((keyName, i) => 
                 <TRow
                   key={i} 
-                  ind={i}
+                  ind={keyName}
                   view={view} 
                   amount={meal[keyName]}>
                 </TRow>
                 )}
               </tbody>
             </table>
-            <span className={styles.mealLabel}>{meal.label}</span>
+            {(errorID && errorID == meal.id && !ignoreErr) 
+            ?
+              <h3>{errorMessage}</h3>
+            :
+              <span className={styles.mealLabel}>{meal.label}</span>
+            }
           </div>
 
           <div className={styles.upperButtonContainer}>
@@ -170,9 +194,10 @@ function Meal({ meal }){
           <div className={styles.lowerButtonContainer}>
             <button 
               type='submit'
-              name='button' 
+              name='button'
               value={['confirm', meal.id]} 
               className={styles.confirmButton}
+              onClick={() => setIgnoreErr(false)}
             >
               Confirm
             </button>
@@ -196,7 +221,7 @@ function TRow(props){
     return (
       <tr>
         <td>{tableHeaders[props.ind]}</td>
-        <td>{props.amount + (props.ind === 0 ? " kcal" : "g")}</td>
+        <td>{props.amount + (props.ind === 'calories' ? " kcal" : "g")}</td>
       </tr>
     );
   }
@@ -206,7 +231,7 @@ function TRow(props){
         <td>{tableHeaders[props.ind]}</td>
         <td>
           <input 
-            name={macros[props.ind]}
+            name={props.ind}
             className={styles.editViewInput}
             type="text" 
             maxLength={5}
@@ -219,5 +244,3 @@ function TRow(props){
 }
 
 export default Meal;
-const tableHeaders = ["Calories", "Total fat", "Saturated fat", "Total carbohydrates", "Sugar", "Protein"];
-const macros = ['calories', 'tfat', 'sfat', 'carbs', 'sugar', 'protein'];

@@ -1,104 +1,222 @@
-/* body {
-  padding-left: 0;
-  max-width: 1440px;
-} */
-
-main {
-  border-radius: 0;
+.main {
   box-sizing: border-box;
+  padding: 5rem 2rem;
+  width: 80%;
+  min-width: 900px;
+  min-height: calc(100vh - var(--navbar-height));
+
+  background: linear-gradient(113deg, rgba(49, 51, 56, 0.86) 49.91%, rgba(122, 122, 140, 0.3) 98.37%);
+  color: var(--color-8);
+
   display: flex;
-  justify-content: center;
-  font-family: ubuntu, arial;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 1rem 1rem 0 0;
 }
 
 .todayTable {
-  margin-top: 2rem;
-  width: 100%;
-  color: white;
+  margin-top: 1rem;
+  color: var(--txt-color);
   border-collapse: collapse;
+  background: none;
 }
 
-.todayTable .contentRow {
-  color: #b5bac1;
-}
-
-.todayTable tr:nth-child(even).contentRow {
+/* Target every other row, but only first 9 columns (ignore last 2 columns which are buttons) */
+.todayTable tr:nth-child(even).contentRow td:nth-child(-n+9) {
   background-color: var(--bg-color);
 }
 
 .todayTable .btnTd {
-  background-color: var(--color-1);
+  background-color: none;
 }
 
-.todayTable th {
+.todayTable tr th {
+  padding: 0 1rem 2rem;
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 1px;
-  padding: 0 1rem 2rem;
   text-align: center;
-  border-bottom: #f79211 solid 2px;
+  border-bottom: var(--main-color) solid 2px;
 }
 
-.todayTable tr:first-child td {
+.contentRow td{
+  padding: 0.5rem;
+  text-align: center;
+}
+.contentRow td:first-of-type{
+  text-align: left;
+  padding-left: 1rem;
+}
+.contentRow:first-of-type td {
   padding-top: 1rem;
 }
 
-.todayTable td:first-child {
-  padding-left: 1rem;
-}
 
-.todayTable td:not(:first-child) {
-  text-align: center;
-}
+.contentRow div {
+  box-sizing: content-box;
+  height: 2.2rem;
+  width: 5rem;
 
-.todayTable td {
-  padding: 0.3rem 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+
+  background: none;
   font-size: 1rem;
-  font-weight: 300;
-  letter-spacing: 1px;
+  border: solid 2px transparent;
+  border-radius: 2rem;
 }
 
-#lastRow td {
-  padding-bottom: 1rem;
+.amountInput {
+  box-sizing: content-box;
+  height: 1.7rem;
+  width: 5rem;
+  
+  background: none;
+  font-size: 1rem;
+  border: solid 2px var(--main-color);
+  color: white;
+  text-align: center;
+  border-radius: 2rem;
 }
 
-#sumUpRow td {
-  padding: 2rem 1rem;
-  border-top: #f79211 solid 2px;
+.amountInput::placeholder {
+  color: #b5bac1;
 }
 
-#targetRow td {
-  padding: 6rem 1rem 1rem;
-}
 
-#leftToConsumeRow td {
-  padding: 1rem 1rem;
-  border-top: #f79211 solid 2px;
-}
+/* Buttons */
 
 .todayTable button {
+  box-sizing: border-box;
+  padding: 0 1rem;
+  height: 3rem;
+  width: 5rem;
+
   border-radius: 4px;
   background: none;
-  padding: 1rem;
   font-size: 0.9rem;
   font-weight: 500;
+  text-align: center;
   color: white;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.15);
 }
 
 .todayDeleteBtn {
-  margin-left: 2rem;
+  margin-left: 1rem;
   border: 2px solid red;
 }
-
 .todayDeleteBtn:hover {
   background-color: red;
 }
 
-.todayEdit-btn {
-  border: 2px solid #f79211;
+.todayEditBtn,
+.todayCancelBtn {
+  border: 2px solid var(--main-color);
+}
+.todayEditBtn:hover,
+.todayCancelBtn:hover {
+  background-color: var(--main-color);
 }
 
-.todayEditBtn:hover {
-  background-color: #f79211;
+.todaySaveBtn {
+  margin-left: 1rem;
+  border: 2px solid rgb(89, 210, 89);
+}
+.todaySaveBtn:hover{
+  background-color: rgb(89, 210, 89);
+}
+
+.todayTable .clearBtn {
+  margin-left: 1rem;
+  width: 11rem;
+  border: 2px solid red;
+}
+.clearBtn:hover {
+  background-color: red;
+}
+
+
+@media only screen and (max-width: 1350px) {
+  .todayTable tr th {
+    padding: 0 0.5rem 2rem;
+  }
+  .todayTable button {
+    padding: 0 0.5rem;
+  }
+  .todayDeleteBtn,
+  .todaySaveBtn {
+    margin-left: 0.5rem;
+  }
+  .btnTd {
+    padding-left: 0 !important;
+  }
+  .clearBtn{
+    margin-left: 0.5rem !important;
+    width: 10.5rem !important;
+  }
+  .contentRow td:first-of-type {
+    text-align: left;
+    padding-left: 0.5rem;
+  }
+  .extraRow td:first-of-type {
+    padding-left: 0.5rem !important;
+  }
+}
+
+
+.extraRow td {
+  box-sizing: border-box;
+  padding: 1rem 0.5rem 0.5rem;
+  text-align: center;
+  height: 4.5rem;
+}
+.extraRow td:first-of-type{
+  text-align: left;
+  padding-left: 1rem;
+}
+
+.lastRow td {
+  padding-bottom: 1rem;
+}
+
+.sumUpRow td:nth-child(-n+7) {
+  border-top: #f79211 solid 2px;
+}
+
+.targetRow td {
+  padding: 1rem;
+  padding-top: 6rem;
+}
+
+.leftToConsumeRow td {
+  padding: 1rem 1rem;
+  border-top: #f79211 solid 2px;
+}
+
+.negative {
+  color: rgb(222, 103, 103); 
+}
+.positive {
+  color: rgb(89, 210, 89);
+}
+
+.emptyList {
+  align-self: center;
+  color: var(--main-color);
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+}
+
+h3 {
+  color: rgb(222, 103, 103);
+  margin-bottom: 3rem;
+}
+
+.unsetRow td {
+  color: var(--main-color);
+  text-align: center !important;
+  font-size: 1.2rem;
+  /* letter-spacing: 1px; */
 }

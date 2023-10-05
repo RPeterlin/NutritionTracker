@@ -235,7 +235,7 @@ function TRow(props){
             className={styles.editViewInput}
             type="text" 
             maxLength={5}
-            placeholder={props.amount + (props.ind === 0 ? " kcal" : "g")}/>
+            placeholder={props.amount + (props.ind === 'calories' ? " kcal" : "g")}/>
         </td>
       </tr>
     );

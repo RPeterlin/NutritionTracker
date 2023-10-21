@@ -37,7 +37,7 @@ function Navbar() {
           <NavItem label="#Logo" dest="/" />
           <NavItem label="Dashboard" dest="/dashboard" />
           <NavItem label="Add a meal" dest="/dashboard/add-meal" />
-          <NavItem label="Today-list" dest="today-list" />
+          <NavItem label="Today-list" dest="/today-list" />
           <NavItem label="Profile" dest="/profile" />
         </ul>
       </div>

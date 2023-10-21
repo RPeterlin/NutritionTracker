@@ -35,6 +35,7 @@
 
   color: white;
 }
+
 .updateContainer {
   margin-right: 3rem;
 }
@@ -83,6 +84,7 @@
   justify-content: space-evenly;
   margin-top: 2rem;
 }
+
 .updateContainer .buttonContainer {
   width: 90%;
 }
@@ -212,7 +214,7 @@ input:focus {
 
 .editViewInput,
 .inputDiv {
-  width: 100%;
+  width: calc(100% - 4px);
   height: 1.2rem;
   margin: 0;
   padding: 0.2rem 0;
@@ -223,10 +225,10 @@ input:focus {
   text-align: center;
   letter-spacing: 1px;
   background: none;
-
   border: solid 2px transparent;
   color: var(--txt-color);
 }
+
 .inputDiv {
   display: flex;
   justify-content: center;
@@ -256,6 +258,7 @@ input:focus {
   justify-content: center;
   align-items: center;
 }
+
 .unsetContainer .header,
 .unsetContainer .buttonContainer {
   text-align: center;

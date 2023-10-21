@@ -1,39 +1,32 @@
-import React, { useState } from 'react'
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import '../styles/general.css';
+import React, { useEffect } from 'react'
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements, redirect } from 'react-router-dom';
 
-// Pages
-import Error from '../pages/Error';
-import NotFound from '../pages/NotFound';
-import Home from '../pages/Home';
-import AddMeal, { loader as addMealLoader, action as addMealAction} from '../pages/AddMeal';
-import TodayList, { loader as todayLoader, action as todayListAction} from '../pages/TodayList';
-import Dashboard, { loader as dashboardLoader } from '../pages/Dashboard';
-import { action as dashboardAction } from '../components/Meal';
-
-// User related pages
-import Signup, {loader as signupLoader, action as signupAction} from '../pages/user_related/Signup';
-import Login, {loader as loginLoader, action as loginAction} from '../pages/user_related/Login';
-import Profile, {loader as profileLoader, action as profileAction} from '../pages/user_related/Profile';
-import ForgotPassword, {loader as forgotLoader, action as forgotAction} from '../pages/user_related/ForgotPassword';
-
-
-// Components
 import Layout from './Layout';
+import ProtectedRoute from './ProtectedRoute';
+
+import Home from '../pages/public/Home';
+import Login, { loader as loginLoader, action as loginAction } from '../pages/public/Login';
+import Signup, { action as signupAction } from '../pages/public/Signup';
+import PasswordReset, { action as passwordResetAction } from '../pages/public/PasswordReset';
+import Dashboard, { action as dashboardAction } from '../pages/private/Dashboard';
+import AddMeal, { action as addMealAction } from '../pages/private/AddMeal';
+import TodayList, { action as todayListAction } from '../pages/private/TodayList';
+import Profile, { action as profileAction } from '../pages/private/Profile';
+
+import '../styles/general.css';
+import { useAuth } from '../contexts/AuthContext';
 import { useData } from '../contexts/DataContext';
 
 
 function App() {
 
-  const {
+  const { 
     currentUser,
-    signup, 
-    login, 
-    logout,
-    handleUpdateEmail, 
-    handleUpdatePassword,
+    signup,
+    login,
     resetPassword,
+    handleUpdateEmail,
+    handleUpdatePassword, 
   } = useAuth();
 
   const {
@@ -41,76 +34,85 @@ function App() {
     updateUser,
     addToLibrary,
     updateLibrary,
-    deleteFromLibrary,
     updateTodayList,
   } = useData();
 
-  const [neki, setNeki] = useState();
-  const rerender = [neki, setNeki];
+  // console.log("Rerender in App");
 
   const router = createBrowserRouter(createRoutesFromElements(
     <Route path='/' element={<Layout />}>
 
+      {/* Public routes */}
       <Route 
-        index 
-        element={<Home/>} 
+        index
+        element={<Home />}
       />
       <Route 
-        path='/signup' 
-        element={<Signup />} 
-        loader={({ request }) => signupLoader(request, currentUser)}
-        action={async ({ request }) => await signupAction(request, signup, addUser)}
-      />
-      <Route 
-        path='/login' 
-        element={<Login />} 
+        path='/login'
+        element={<Login />}
         loader={({ request }) => loginLoader(request, currentUser)}
-        action={async ({ request }) => await loginAction(request, login)}
+        action={({ request }) => loginAction(request, login)}
       />
-      <Route
+      <Route 
+        path='/signup'
+        element={<Signup />}
+        loader={() => currentUser && redirect('/')}
+        action={({ request }) => signupAction(request, signup, addUser)}
+      />
+      <Route 
         path='/password-reset'
-        element={<ForgotPassword />}
-        loader={({ request }) => forgotLoader(request, currentUser)}
-        action={async ({ request }) => await forgotAction(request, resetPassword)}
+        element={<PasswordReset />}
+        loader={() => currentUser && redirect('/')}
+        action={({ request }) => passwordResetAction(request, resetPassword)}
       />
 
-      {/* Protected routes */}
-      <Route 
-        path='/profile' 
-        element={<Profile />} 
-        loader={({ request }) => profileLoader(request, currentUser)}
-        action={async ({ request }) => await profileAction(request, handleUpdateEmail, handleUpdatePassword, logout, updateUser)}
-      />
-      <Route 
-        path='/today-list' 
-        element={<TodayList />} 
-        loader={({ request }) => todayLoader(request, currentUser)}
-        action={({ request }) => todayListAction(request, updateTodayList)}
-      />
-
-      <Route 
+      {/* Private routes */}
+      <Route
         path='/dashboard'
-        element={<Dashboard />}
-        loader={({ request }) => dashboardLoader(request, currentUser)}
-        action={async ({ request }) => await dashboardAction(request, deleteFromLibrary, updateLibrary, rerender)}
+        element={
+          <ProtectedRoute currentUser={currentUser} dest='/dashboard' >
+            <Dashboard />
+          </ProtectedRoute>
+        }
+        action={({ request }) => dashboardAction(request, updateLibrary)}
       >
         <Route 
-          path='add-meal' 
-          element={<AddMeal />} 
-          loader={({ request }) => addMealLoader(request, currentUser)}
-          action={async ({ request }) => await addMealAction(request, addToLibrary, rerender)}
+          path='add-meal'
+          element={<AddMeal />}
+          action={({ request }) => addMealAction(request, addToLibrary)}
         />
       </Route>
-        
-      {/* Page not found */}
-      <Route path='*' element={<NotFound/>}/>
+
+      <Route 
+        path='/today-list'
+        element={
+          <ProtectedRoute currentUser={currentUser} dest='/today-list' >
+            <TodayList />
+          </ProtectedRoute>
+        }
+        action={({ request }) => todayListAction(request, updateTodayList)}
+      />
+      <Route 
+        path='/profile'
+        element={
+          <ProtectedRoute currentUser={currentUser} dest='/profile' >
+            <Profile />
+          </ProtectedRoute>
+        }
+        action={({ request }) => profileAction(request, handleUpdateEmail, handleUpdatePassword, updateUser)}
+      />
+
+
+
+      
+
     </Route>
-  ));
+  ))
+
 
   return (
-    <RouterProvider router={router}/>
-  );
+    <RouterProvider router={router} />
+  )
 }
 
-
-export default App;
+export default App

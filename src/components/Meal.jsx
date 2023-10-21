@@ -1,68 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from '../styles/Dashboard.module.css';
 import { Form, useActionData } from 'react-router-dom';
 
 import image from '../assets/images/image0.jpg';
 import { useData } from '../contexts/DataContext';
-import { tableHeaders, numericInputCheck } from '../utils';
-
-
-
-export async function action(request, deleteFromLibrary, updateLibrary){
-  const formData = await request.formData();
-  const buttonInfo = formData.get('button');
-  const [actionType, mealID] = buttonInfo.split(',');
-
-  switch (actionType){
-
-    case 'editImage':
-      // TODO
-      break;
-
-    case 'delete':
-      await deleteFromLibrary(mealID);
-      return null;
-
-    case 'confirm':
-      const data = Object.fromEntries(formData);
-      delete data.button;
-
-      // Filter only the inputs that changed
-      const filteredData = {};
-      Object.keys(data).map(k => {
-        if (data[k]){
-          filteredData[k] = data[k]
-        }
-      });
-
-      // Check if fields are numeric
-      const invalidKey = numericInputCheck(filteredData, ['unit']);
-      if (invalidKey){
-        return `"${tableHeaders[invalidKey]}" has to be a number. | ${mealID}`;
-      }
-
-      // Update the meal in the library
-      await updateLibrary(mealID, filteredData);
-      break;
-
-    default:
-      console.log("Default");
-  }
-  return null;
-}
+import { tableHeaders } from '../utils';
 
 
 function Meal({ meal }){
   
-  const [view, setView] = useState("normal");
+  const [view, setView] = useState('normal');
+  const [previousMeal, setPreviousMeal] = useState(meal);
+  const err = useActionData();
   const [ignoreErr, setIgnoreErr] = useState(false);
-  const { addToTodayList } = useData();
-  let err = useActionData();
+  const { addToTodayList, deleteFromLibrary } = useData();
 
-  // Set view to normal if any of the listed properties changed
-  useEffect(() => {
+  // Could use useEffect for this, but the official documentation recommends to do it manually
+  if (previousMeal !== meal) {
+    setPreviousMeal(meal);
     setView('normal');
-  }, [meal.calories, meal.tfat, meal.sfat, meal.carbs, meal.sugar, meal.protein, meal.unit]);
+  }
 
   async function handleAdd(){
     const newMeal = {...meal};
@@ -71,8 +28,8 @@ function Meal({ meal }){
     await addToTodayList(newMeal);
     return null;
   }
-
-  const [errorMessage, errorID] = err ? err.split(' | ') : [false, false];
+  
+  const  { errorMessage, errorID } = err ? err : {errorMessage: false, errorID: false};
 
   switch (view){
     case "normal":
@@ -176,16 +133,16 @@ function Meal({ meal }){
 
           <div className={styles.upperButtonContainer}>
             <button 
-              name='button' 
-              value={['editImage', meal.id]}
+              type='button' 
               className={styles.editImageButton}
+              onClick={() => setView('normal') /* DO SOMETHING ABOUT THIS */}
             >
               Edit image
             </button>
             <button 
-              name='button' 
-              value={['delete', meal.id]} 
+              type='button' 
               className={styles.deleteButton}
+              onClick={() => deleteFromLibrary(meal.id)}
             >
               Delete
             </button>
@@ -194,14 +151,15 @@ function Meal({ meal }){
           <div className={styles.lowerButtonContainer}>
             <button 
               type='submit'
-              name='button'
-              value={['confirm', meal.id]} 
+              name='mealID'
+              value={meal.id} 
               className={styles.confirmButton}
               onClick={() => setIgnoreErr(false)}
             >
               Confirm
             </button>
             <button 
+              type='button'
               className={styles.cancelButton} 
               onClick={() => setView("normal")}
             >
@@ -217,11 +175,11 @@ function Meal({ meal }){
 }
 
 function TRow(props){
-  if (props.view === "info"){
+  if (props.view === 'info'){
     return (
       <tr>
         <td>{tableHeaders[props.ind]}</td>
-        <td>{props.amount + (props.ind === 'calories' ? " kcal" : "g")}</td>
+        <td>{props.amount + (props.ind === 'calories' ? ' kcal' : 'g')}</td>
       </tr>
     );
   }

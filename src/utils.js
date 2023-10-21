@@ -13,11 +13,14 @@ export default function mapErrorMessages(errorMessage){
     case 'Firebase: Error (auth/wrong-password).':
       return "Username and password don't match.";
     
+    case 'Firebase: Error (auth/invalid-login-credentials).':
+      return "Username and password don't match.";
+    
     case 'Firebase: Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later. (auth/too-many-requests).':
       return "Too many login attempts. Try again later."
     
     default:
-      return 'Unknown error occured';
+      return errorMessage;
   }
 }
 
@@ -33,7 +36,7 @@ export const tableHeaders = {
 export function numericInputCheck(data, exceptions){
   let invalid = null;
   Object.keys(data).map(keyName => {
-    if (!exceptions.includes(keyName) && isNaN(data[keyName])){
+    if (data[keyName] !== '' && !exceptions.includes(keyName) && isNaN(data[keyName])){
       invalid = keyName;
     }
   });

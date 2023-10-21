@@ -1,47 +1,52 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc } from 'firebase/firestore';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { addDoc, collection, deleteDoc, doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from './AuthContext';
+import { tableHeaders, numericInputCheck } from '../utils';
 
 
 const DataContext = createContext();
 
 export function DataProvider({ children }) {
-  
-  // User's data (email, target macros...)
+
+  // Includes user's data (email, target macros...)
   const [currentUserData, setCurrentUserData] = useState(null);
-  // List of meals in a user's 'meals' collection
+  // A list of meals in the current-user's collection
   const [currentMealData, setCurrentMealData] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const { currentUser } = useAuth();
 
-  // return updateDoc(doc(db, 'users', currentUser.uid, 'meals', id), diff);
-  // On user-change, apply listeners
   useEffect(() => {
-
-    async function getData(){
-      onSnapshot(doc(db, 'users', currentUser.uid), doc => {
+    function getData() {
+      const unsubscribeUserData = onSnapshot(doc(db, 'users', currentUser.uid), doc => {
         setCurrentUserData(doc.data());
-      })
-      onSnapshot(collection(db, 'users', currentUser.uid, 'meals'), col => {
+      });
+      const unsubscribeMealData = onSnapshot(collection(db, 'users', currentUser.uid, 'meals'), col => {
         const listOfMeals = col.docs.map(doc => {return {...doc.data(), id: doc.id}});
         setCurrentMealData(listOfMeals);
-      })
+      });
+      return {unsubscribeUserData, unsubscribeMealData};
     }
 
-    if (currentUser){
-      getData();
+    if (currentUser) {
+      // onLogin: get data
+      const { unsubscribeUserData, unsubscribeMealData } = getData();
+      setLoading(false);
+      return () => {
+        unsubscribeUserData();
+        unsubscribeMealData();
+      }
     }
-    setLoading(false);
-    
+    else {
+      // onLogout: clear data (this scenario also happens on the initial visit when the user isn't logged in yet)
+      setCurrentUserData(null);
+      setCurrentMealData(null);
+      setLoading(false);
+    }
   }, [currentUser]);
 
-
-  //
-  // USER section
-  //
-  function addUser(uid, email){
+  function addUser(uid, email) {
     // On signup, add user to the database
     const docData = {
       userID: uid,
@@ -62,7 +67,7 @@ export function DataProvider({ children }) {
     return setDoc(doc(db, 'users', uid), docData);
   }
 
-  function updateUser(type, arg){
+  function updateUser(type, arg) {
 
     if (type === 'email'){
       // Update user's email
@@ -95,39 +100,54 @@ export function DataProvider({ children }) {
     }
   }
 
+  function addToLibrary(data) {
 
-  //
-  // LIBRARY section
-  //
+    // Check if required fields are set
+    if (!data.label || !data.unit || !data.calories){
+      throw new Error('Please fill the required fields');
+    }
+    // Check if optional fields are either numeric or not set ('')
+    const invalidKey = numericInputCheck(data, ['label', 'unit', 'cat']);
+    if (invalidKey){
+      throw new Error(`"${tableHeaders[invalidKey]}" has to be a number.`);
+    }
+    
+    // Set the rest of the fields to default values (0)
+    Object.keys(data).forEach((key) => {
+      if(data[key] === ''){
+        data[key] = 0;
+      }
+    });
 
-
-  function addToLibrary(data){
+    // Append the fields that will be required in the next version
     data.tag = 'no-tag';
     data.image = 'todo-implement-adding-images';
+
+    // Add it to the collection/library
     return addDoc(collection(db, 'users', currentUser.uid, 'meals'), data);
   }
 
+  function updateLibrary(id, data) {
+    
+    // Check if there are no fields that were set (empty data)
+    const oneFieldIsNonEmpty = Object.keys(data).map(k => data[k] !== '').reduce((a, c) => a || c, false);
+    if (!oneFieldIsNonEmpty){
+      throw new Error("At least one field must be changed.")
+    }
 
-  function updateLibrary(id, data){
-
-    // Check if there are no changes (empty data)
-    if (Object.keys(data).length === 0){
-      return null;
+    // Check if the fields that are set are actually numeric
+    const invalidKey = numericInputCheck(data, ['label', 'unit', 'cat']);
+    if (invalidKey){
+      throw new Error(`"${tableHeaders[invalidKey]}" has to be a number.`);
     }
 
     // Get the old version of the meal
-    const currentMealDataCopy = {...currentMealData};
-    let currentMeal = null;
-    Object.keys(currentMealDataCopy).map(keyName => {
-      if (currentMealDataCopy[keyName].id === id) {
-        currentMeal = currentMealDataCopy[keyName];
-      }
-    });
-    
+    let oldMeal = currentMealData.find(meal => meal.id === id);
+
     // Check if there is any difference between the old and new version
     const diff = {}
     Object.keys(data).map(k => {
-      if (data[k] !== currentMeal[k]){
+      if (data[k] !== '' && data[k] !== oldMeal[k]){
         diff[k] = data[k];
       }
     });
@@ -141,51 +161,52 @@ export function DataProvider({ children }) {
     return updateDoc(doc(db, 'users', currentUser.uid, 'meals', id), diff);
   }
 
-
   function deleteFromLibrary(id){
     return deleteDoc(doc(db, 'users', currentUser.uid, 'meals', id));
   }
 
-
-  //
-  // TODAY-LIST section
-  //
-
-
-  function addToTodayList(data){
+  function addToTodayList(data) {
 
     const todayList = {...currentUserData.todayList};
+    // If already on the list, increase the count, else add it to the list
     if (todayList[data.id]){
       todayList[data.id] += 1;
     }
     else {
       todayList[data.id] = 1;
     }
-    console.log(todayList);
+    // Update today-list
     return updateDoc(doc(db, 'users', currentUser.uid), {todayList: todayList});
   }
 
+  function updateTodayList(id, amount) {
 
-  function updateTodayList(id, amount){
-    
+    if (!amount){
+      throw new Error('Please enter a new amount.');
+    }
+
+    if (isNaN(amount)){
+      throw new Error('New amount has to be a number.');
+    }
+
     if (amount === 0){
       return deleteFromTodayList(id);
     }
+
     const todayList = {...currentUserData.todayList};
     todayList[id] = Number(amount);
     return updateDoc(doc(db, 'users', currentUser.uid), {todayList: todayList});
   }
 
-  function deleteFromTodayList(id){
+  function deleteFromTodayList(id) {
     const todayList = {...currentUserData.todayList};
     delete todayList[id];
     return updateDoc(doc(db, 'users', currentUser.uid), {todayList: todayList});
   }
-  
-  function clearTodayList(){
+
+  function clearTodayList() {
     return updateDoc(doc(db, 'users', currentUser.uid), {...currentUserData, todayList: {}});
   }
-
 
   const value = {
     currentUserData,
@@ -203,14 +224,11 @@ export function DataProvider({ children }) {
 
   return (
     <DataContext.Provider value={value}>
-      {/* {console.log(loading, currentUserData, currentMealData)} */}
-
-
-      {!loading && children}
+      { !loading && children }
     </DataContext.Provider>
-  );
+  )
 }
 
-export function useData(){
+export function useData() {
   return useContext(DataContext);
 }

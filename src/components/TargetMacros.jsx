@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useData } from '../contexts/DataContext';
 import styles from '../styles/Profile.module.css';
 import { Form } from 'react-router-dom';
@@ -11,11 +11,13 @@ function TargetMacros() {
   const { currentUserData } = useData();
   const targetMacros = currentUserData?.targetMacros;
 
-  useEffect(() => {
+  // Replacement for useEffect
+  const [previousMacros, setPreviousMacros] = useState(targetMacros);
+  if (previousMacros !== targetMacros) {
+    setPreviousMacros(targetMacros);
     setView('normal');
-  }, [targetMacros]);
+  }
 
-  
   if (!targetMacros){
     return;
   }

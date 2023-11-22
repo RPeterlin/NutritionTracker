@@ -4,4 +4,4 @@ The "tech stack" consists of React (with React Router v6) and Firebase for user 
 
 It is currently available at https://nutrition-tracker-26769.web.app/
 
-In the future we should add some meaningful homepage text and an option for users to add images of their meals. Ideally, the app would be made usable for mobile user as well.
+In the future we should add some meaningful homepage text and an option for users to add images of their meals. Ideally, the app would be made usable for mobile users as well.
